@@ -17,4 +17,6 @@ target_link_libraries(gnuplot-example-1d
   gnuplot-iostream::gnuplot-iostream)
 #target_compile_features(gnuplot-example-1d PRIVATE cxx_std_17)
 
-add_test(NAME example-1d COMMAND gnuplot-example-1d)
+if(WITH_BOOST)
+  add_test(NAME example-1d COMMAND gnuplot-example-1d)
+endif()

@@ -13,6 +13,8 @@ class GnuplotIostreamConan(ConanFile):
     topics = ("gnuplot", "plotting")
     no_copy_source = True
     settings = "compiler"
+    options = {"with_boost": [True, False]}
+    default_options = ("with_boost=True")
 
     def configure(self):
         if not tools.valid_min_cppstd(self, "17"):
@@ -21,9 +23,11 @@ class GnuplotIostreamConan(ConanFile):
             self.settings.compiler.cppstd = 17
 
     def requirements(self):
-        self.requires("boost_iostreams/[>=1.69.0]@bincrafters/stable")
-        self.requires("boost_filesystem/[>=1.69.0]@bincrafters/stable")
-        self.requires("boost_system/[>=1.69.0]@bincrafters/stable")
+
+        if self.options.with_boost:
+            self.requires("boost_iostreams/[>=1.69.0]@bincrafters/stable")
+            self.requires("boost_filesystem/[>=1.69.0]@bincrafters/stable")
+            self.requires("boost_system/[>=1.69.0]@bincrafters/stable")
 
     def source(self):
         _git = tools.Git()
@@ -53,12 +57,18 @@ class GnuplotIostreamConan(ConanFile):
         self.copy("LICENSE", dst="licenses")
 
     def package_info(self):
-        self.cpp_info.cxxflags.append(tools.cppstd_flag(self.settings))
+
+        if self.options.with_boost:
+            self.cpp_info.cxxflags.append(tools.cppstd_flag(self.settings))
+        else:
+            self.info.header_only()
 
     def package_id(self):
-        del self.info.settings.compiler.version
-        del self.info.settings.compiler.libcxx
-        del self.info.settings.compiler.threads
-        del self.info.settings.compiler.runtime
-        del self.info.settings.compiler.runtime_type
-        del self.info.settings.compiler.exception
+
+        if self.options.with_boost:
+            del self.info.settings.compiler.version
+            del self.info.settings.compiler.libcxx
+            del self.info.settings.compiler.threads
+            del self.info.settings.compiler.runtime
+            del self.info.settings.compiler.runtime_type
+            del self.info.settings.compiler.exception

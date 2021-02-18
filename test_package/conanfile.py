@@ -13,6 +13,7 @@ class GnuplotIostreamTestConan(ConanFile):
         if self._cmake:
             return self._cmake
         self._cmake = CMake(self)
+        self._cmake.definitions["WITH_BOOST"] = self.options["gnuplot-iostream"].with_boost
         self._cmake.configure()
         return self._cmake
 
@@ -23,12 +24,17 @@ class GnuplotIostreamTestConan(ConanFile):
         self.options["zstd"].shared = self.options.shared
 
     def build(self):
-        cmake = self._configure_cmake()
-        cmake.build()
+
+        if self.options["gnuplot-iostream"].with_boost:
+            cmake = self._configure_cmake()
+            cmake.build()
 
     def test(self):
         if tools.cross_building(self.settings):
             print("NOT RUN (cross-building)")
+            return
+
+        if self.options["gnuplot-iostream"].with_boost:
             return
 
         cmake = self._configure_cmake()

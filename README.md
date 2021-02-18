@@ -28,6 +28,8 @@ The package is usually consumed using the `conan install` command or a *conanfil
 
    [options]
 
+   [settings]
+   cppstd=17
 
    [imports]
    licenses, * -> ./licenses @ folder=True
@@ -58,9 +60,16 @@ The package is usually consumed using the `conan install` command or a *conanfil
 
 ## Package options
 
-Option | Default | Domain
+Option | Default | Values
 ---|---|---
+`with_boost` | `True` | `[True, False]`
 
 ## Known recipe issues
 
-(Add known issues/shortcomings here)
+`gnuplot-iostream` requires c++17 and you need to specify this standard for targets that
+use the header file.
+
+It is possible to get a header only installation without explicit dependency on boost. In
+that case you are responsible for linking the necessary requirements
+yourself. Specifically, you need the following boost components: `filesystem`, `iostreams`
+and `system`.
