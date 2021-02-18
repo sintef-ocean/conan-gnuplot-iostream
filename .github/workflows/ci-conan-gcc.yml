@@ -1,0 +1,49 @@
+name: GCC Conan
+
+# This workflow is triggered on pushes to the repository.
+on: [push]
+
+env:
+  SINTEF_REFERENCE: "gnuplot-iostream*"
+  SINTEF_CONAN_CLASS: "GnuplotIostreamConan"
+  CONAN_UPLOAD: "https://api.bintray.com/conan/sintef-ocean/conan"
+  CONAN_PASSWORD_SINTEF: ${{ secrets.BINTRAY_API_KEY }}
+  CONAN_LOGIN_USERNAME_SINTEF: ${{ secrets.BINTRAY_USER }}
+  CONAN_NON_INTERACTIVE: True
+  CONAN_USE_ALWAYS_SHORT_PATHS: True
+  CONAN_SYSREQUIRES_MODE: enabled
+  CONAN_SYSREQUIRES_SUDO: 1
+jobs:
+  conan-with-gcc:
+    name: Conan
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler_version: [7, 8, 9]
+        build_type: [Debug, Release]
+        os: [ubuntu-20.04]
+    container:
+      image: conanio/gcc${{ matrix.compiler_version }}
+      options: -u 0
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo pip3 install --upgrade setuptools pip
+          sudo pip3 install conan requests
+      - name: Configure Conan
+        run: conan remote add sintef ${CONAN_UPLOAD} --insert 0
+      - name: Conan create
+        run: |
+          conan create -s build_type=${{ matrix.build_type }} \
+            -s compiler.libcxx=libstdc++11 \
+            -b missing -b outdated . sintef/stable
+      - name: Conan upload
+        run: |
+          conan upload --all -c -r sintef ${SINTEF_REFERENCE} --retry 10 --retry-wait 20 --force
+      - name: Bintray info
+        run: |
+          python3 bintray.py ${SINTEF_CONAN_CLASS} \
+            ${CONAN_LOGIN_USERNAME_SINTEF} ${CONAN_PASSWORD_SINTEF}
