@@ -43,7 +43,7 @@ jobs:
           conan create -s build_type=${{ matrix.build_type }} `
             -s compiler.toolset=${{ matrix.compiler_toolset }} `
             -s compiler.version=${{ matrix.compiler_version }} `
-            -o with_boost=False `
+            -o gnuplot-iostream:with_boost=False `
             -b missing -b outdated . sintef/stable
       - name: Conan upload
         run: |
