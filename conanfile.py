@@ -12,6 +12,13 @@ class GnuplotIostreamConan(ConanFile):
         "for pushing data arrays and getting mouse clicks"
     topics = ("gnuplot", "plotting")
     no_copy_source = True
+    settings = "compiler"
+
+    def configure(self):
+        if not tools.valid_min_cppstd(self, "17"):
+            self.output.warn(
+                "C++17 is required, setting settings.compiler.cppstd=17")
+            self.settings.compiler.cppstd = 17
 
     def requirements(self):
         self.requires("boost_iostreams/[>=1.69.0]@bincrafters/stable")
@@ -28,7 +35,6 @@ class GnuplotIostreamConan(ConanFile):
         pass
 
     def system_requirements(self):
-
         if tools.os_info.is_windows:
             if not tools.which("gnuplot"):
                 if tools.which("choco"):
@@ -47,5 +53,12 @@ class GnuplotIostreamConan(ConanFile):
         self.copy("LICENSE", dst="licenses")
 
     def package_info(self):
-        self.info.header_only()
-        self.cpp_info.cxxflags.append("-std=c++17")
+        self.cpp_info.cxxflags.append(tools.cppstd_flag(self.settings))
+
+    def package_id(self):
+        del self.info.settings.compiler.version
+        del self.info.settings.compiler.libcxx
+        del self.info.settings.compiler.threads
+        del self.info.settings.compiler.runtime
+        del self.info.settings.compiler.runtime_type
+        del self.info.settings.compiler.exception

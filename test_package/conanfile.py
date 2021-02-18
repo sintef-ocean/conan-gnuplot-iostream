@@ -17,7 +17,6 @@ class GnuplotIostreamTestConan(ConanFile):
         return self._cmake
 
     def configure(self):
-
         self.options["boost_filesystem"].shared = self.options.shared
         self.options["boost_system"].shared = self.options.shared
         self.options["boost_iostreams"].shared = self.options.shared
