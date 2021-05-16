@@ -25,9 +25,7 @@ class GnuplotIostreamConan(ConanFile):
     def requirements(self):
 
         if self.options.with_boost:
-            self.requires("boost_iostreams/[>=1.69.0]@bincrafters/stable")
-            self.requires("boost_filesystem/[>=1.69.0]@bincrafters/stable")
-            self.requires("boost_system/[>=1.69.0]@bincrafters/stable")
+            self.requires("boost/[>=1.69.0]")
 
     def source(self):
         _git = tools.Git()
