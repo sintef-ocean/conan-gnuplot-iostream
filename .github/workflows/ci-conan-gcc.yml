@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler_version: [7, 8, 9]
+        compiler_version: [7, 8, 9, 10, 11]
         build_type: [Debug, Release]
         os: [ubuntu-20.04]
     container:
@@ -31,13 +31,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo pip3 install --upgrade setuptools pip
-          sudo pip3 install conan requests
+          sudo pip3 install --upgrade conan
       - name: Configure Conan
         run: |
           conan remote add sintef ${CONAN_UPLOAD} --insert 0
       - name: Conan create
         run: |
           conan create -s build_type=${{ matrix.build_type }} \
+            -s compiler.version=${{ matrix.compiler_version }} \
             -s compiler.libcxx=libstdc++11 \
             -b missing -b outdated . sintef/stable
       - name: Conan upload
