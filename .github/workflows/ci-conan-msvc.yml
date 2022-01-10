@@ -22,10 +22,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2019]
+        os: [windows-2022]
         build_type: [Debug, Release]
-        compiler_version: [16]
-        compiler_toolset: [v141, v142]
+        compiler_version: [17]
+        compiler_toolset: [v141, v142, v143]
 
     steps:
       - uses: actions/checkout@v2
@@ -41,6 +41,7 @@ jobs:
           conan create -s build_type=${{ matrix.build_type }} `
             -s compiler.toolset=${{ matrix.compiler_toolset }} `
             -s compiler.version=${{ matrix.compiler_version }} `
+            -s compiler="Visual Studio" `
             -o gnuplot-iostream:with_boost=False `
             -b missing -b outdated . sintef/stable
       - name: Conan upload
