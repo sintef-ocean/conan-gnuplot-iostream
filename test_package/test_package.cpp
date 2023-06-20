@@ -30,6 +30,7 @@ THE SOFTWARE.
 
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/irange.hpp>
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/bind.hpp>
 
 #ifdef USE_ARMA
