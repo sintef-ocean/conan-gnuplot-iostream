@@ -51,6 +51,7 @@ jobs:
             -s compiler.version=${{ matrix.compiler_version }} `
             -pr:b=${{ matrix.profile }} -pr:h=${{ matrix.profile }} `
             -b missing -b outdated -b ${{ env.package_name }}* `
+            -s compiler.cppstd=17 `
             . ${{ env.USER_CHANNEL }}
       - name: Conan upload
         run: echo "No uploading, since header-only"

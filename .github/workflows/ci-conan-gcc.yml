@@ -16,7 +16,7 @@ jobs:
     env:
       USER_CHANNEL: "${{ matrix.conan == '1.0' && 'sintef/stable' || '--user sintef --channel stable' }}"
       UPLOAD_FLAGS: "${{ matrix.conan == '1.0' && '--all' || '' }}"
-      cppstd: "${{ matrix.compiler_version < 11 && 'gnu14' || 'gnu17' }}"
+      cppstd: "${{ matrix.compiler_version < 11 && 'gnu17' || 'gnu17' }}"
     strategy:
       fail-fast: false
       matrix:
