@@ -11,6 +11,7 @@ required_conan_version = ">=1.52.0"
 
 
 class PackageConan(ConanFile):
+    version = "cci.20220124"
     name = "gnuplot-iostream"
     description = "Iostream pipe to gnuplot with some extra functions " \
         "for pushing data arrays and getting mouse clicks"

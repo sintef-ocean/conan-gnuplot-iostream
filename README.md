@@ -17,7 +17,7 @@
 
    ```
    [requires]
-   gnuplot-iostream/[>=2022.01.24]@sintef/stable
+   gnuplot-iostream/cci.2022.01.24@sintef/stable
 
    [tool_requires]
    cmake/[>=3.25.0]
