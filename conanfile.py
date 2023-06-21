@@ -94,14 +94,22 @@ class PackageConan(ConanFile):
         replace_in_file(self, path.join(self.source_folder, "test-assert-depth.cc"), "gp.sendBinary2d(pts);", "")
         replace_in_file(self, path.join(self.source_folder, "test-assert-depth-colmajor.cc"), "gp.sendBinary2d_colmajor(pts);", "")
 
-        replace_in_file(self, path.join(self.source_folder, "CMakeLists.txt"), "test-noncopyable", "") # Some bug: Gets ambigous call
-        replace_in_file(self, path.join(self.source_folder, "CMakeLists.txt"), "test-outputs", "")    # ambiguous template instantiation for ‘class gnuplotio::ArrayTraits<std::array<int, 3>&, void>
-        replace_in_file(self, path.join(self.source_folder, "CMakeLists.txt"), "test-empty", "")       # gnuplot upstream bug
+        cmake_lists_patches = [
+            ("test-noncopyable", ""), # Gets ambiguous call
+            ("test-outputs", ""), # Gets ambiguous call
+            ("test-empty", ""), # Gnuplot upstream bug
+            ("#options.", "include(CTest)"),
+            ("add_executable(${atest} ${atest}.cc)",
+             "add_executable(${atest} ${atest}.cc)\n add_test(NAME ${atest} COMMAND ${atest})"),
+            ("boost_iostreams", "Boost::iostreams"),
+            ("boost_system", "Boost::system"),
+            ("boost_filesystem", "Boost::filesystem")]
 
-        replace_in_file(self, path.join(self.source_folder, "CMakeLists.txt"), "#options.", "include(CTest)")
-        replace_in_file(self, path.join(self.source_folder, "CMakeLists.txt"),
-                        "add_executable(${atest} ${atest}.cc)",
-                        "add_executable(${atest} ${atest}.cc)\n add_test(NAME ${atest} COMMAND ${atest})")
+        if self.settings.os == "Windows":
+            cmake_lists_patches.append(("target_compile_options(${atest} PRIVATE -Wall -Wextra)", ""))
+
+        for item in cmake_lists_patches:
+            replace_in_file(self, path.join(self.source_folder, "CMakeLists.txt"), item[0], item[1])
 
         cmake = CMake(self)
         cmake.configure()
