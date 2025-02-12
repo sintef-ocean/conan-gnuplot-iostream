@@ -45,7 +45,7 @@ jobs:
           apt-get install -y jq pipx build-essential cmake git
           pipx install conan
           echo "/github/home/.local/bin" >> $GITHUB_PATH
-- name: Conan configs
+      - name: Conan configs
         run: |
           conan remote add sintef ${{ env.CONAN_UPLOAD }}
           echo "package_name=$(conan inspect -f json . | jq .name -r)" >> $GITHUB_ENV
